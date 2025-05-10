@@ -5,11 +5,11 @@ from slack_sdk.errors import SlackApiError
 
 app = Flask(__name__)
 
-# Variables desde Render (.env)
+# Variables de entorno desde Render
 SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN")
 SLACK_CHANNEL_ID = os.environ.get("SLACK_CHANNEL_ID")
 
-# Cliente Slack
+# Cliente de Slack
 client = WebClient(token=SLACK_BOT_TOKEN)
 
 @app.route("/", methods=["GET"])
@@ -20,13 +20,14 @@ def home():
 def slack_events():
     data = request.json
 
-    # Verificación de Slack
+    # Verificación inicial de Slack (challenge)
     if data.get("type") == "url_verification":
         return jsonify({"challenge": data.get("challenge")})
 
-    # Evento normal
+    # Evento normal de mensaje
     if data.get("type") == "event_callback":
         event = data.get("event", {})
+
         if event.get("type") == "message" and "subtype" not in event:
             user = event.get("user")
             text = event.get("text")
@@ -34,13 +35,16 @@ def slack_events():
 
             if user and text:
                 try:
-                    client.chat_postMessage(channel=channel, text=f"Hola <@{user}>! Recibido: {text}")
+                    client.chat_postMessage(
+                        channel=channel,
+                        text=f"Hola <@{user}>! Recibido: {text}"
+                    )
                 except SlackApiError as e:
                     print(f"Error enviando mensaje: {e.response['error']}")
 
     return "OK", 200
 
+# Render necesita que usemos el puerto del entorno
 if __name__ == "__main__":
-    # IMPORTANTE: para Render se debe usar el puerto asignado por el sistema
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
