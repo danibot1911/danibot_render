@@ -1,5 +1,5 @@
-import os
 from flask import Flask, request, jsonify
+import os
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
@@ -7,7 +7,6 @@ app = Flask(__name__)
 
 SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN")
 SLACK_CHANNEL_ID = os.environ.get("SLACK_CHANNEL_ID")
-
 client = WebClient(token=SLACK_BOT_TOKEN)
 
 @app.route("/", methods=["GET"])
@@ -29,7 +28,7 @@ def slack_events():
 
         if event.get("type") == "message" and user and text:
             try:
-                client.chat_postMessage(channel=channel, text=f"Echo: {text}")
+                client.chat_postMessage(channel=channel, text=f"Recibido: {text}")
             except SlackApiError as e:
                 print(f"Error enviando mensaje: {e.response['error']}")
 
