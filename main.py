@@ -42,7 +42,7 @@ def slack_events():
                 except SlackApiError as e:
                     print(f"Error enviando mensaje: {e.response['error']}")
 
-        return "OK", 200  # <<<< ESTE return debe estar aquí dentro
+    return "OK", 200
 
 # Lanzar en el puerto asignado por Render
 if __name__ == "__main__":
