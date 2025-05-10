@@ -29,12 +29,11 @@ def slack_events():
 
         if event.get("type") == "message" and user and text:
             try:
-                client.chat_postMessage(channel=channel, text=f"Hola <@{user}>! Recibí tu mensaje: {text}")
+                client.chat_postMessage(channel=channel, text=f"Echo: {text}")
             except SlackApiError as e:
                 print(f"Error enviando mensaje: {e.response['error']}")
 
     return "OK", 200
 
 if __name__ == "__main__":
-    app.run(debug=False, host="0.0.0.0", port=10000)o
-        
+    app.run(debug=False, host="0.0.0.0", port=10000)
